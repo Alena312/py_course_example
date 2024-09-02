@@ -4,7 +4,7 @@ from uuid import uuid4
 
 
 def pytest_addoption(parser):
-    parser.addoption('--url', default='https://www.python.org/', help='URL для запуска тестов')
+    parser.addoption('--url', default='https://www.python.org', help='URL для запуска тестов')
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -13,6 +13,12 @@ def pytest_runtest_makereport(item, call):
     rep = outcome.get_result()
 
     setattr(item, "rep_" + rep.when, rep)
+
+
+@pytest.fixture(scope='session')
+def base_url(request):
+    return request.config.getoption('--url')
+
 
 @pytest.fixture
 def browser(request):
@@ -23,7 +29,6 @@ def browser(request):
     options.add_experimental_option("prefs", prefs)
 
     driver = webdriver.Chrome(options=options)
-    driver.get(request.config.getoption('--url'))
 
     yield driver
 

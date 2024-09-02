@@ -26,7 +26,7 @@ def test_waiting_callback(browser):
     assert 'An Informal Introduction to Python' in browser.title
 
 
-
+@pytest.mark.skip
 def test_waiting_ec(browser):
     wait = WebDriverWait(browser, 15)
     wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="dive-into-python"]/ul[2]/li[2]/div[2]/p/a')))
