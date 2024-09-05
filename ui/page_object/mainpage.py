@@ -1,27 +1,33 @@
+from ui.page_object.downloadpage import DownloadsPage
 from ui.page_object.page import BasePage
 from selenium.webdriver.common.by import By
 
-from ui.page_object.elements_stolen_code import Page, Element
+
+class MainPageLocators:
+    SEARCH_INPUT = (By.CSS_SELECTOR, '#id-search-field')
+    GO_BUTTON = (By.CSS_SELECTOR, '#submit')
+    DOWNLOAD_LINK = (By.CSS_SELECTOR, '#downloads > a')
 
 
 class MainPage(BasePage):
     """
-        PageObject: https://python.org/
+    PageObject: https://python.org/
     """
 
     path = '/'
+    locators = MainPageLocators()
 
-    SEARCH_INPUT = (By.CSS_SELECTOR, '#id-search-field')
-    GO_BUTTON = (By.CSS_SELECTOR, '#submit')
+    def is_page_loaded(self) -> bool:
+        self.wait.until(lambda _: self._find_element(*self.locators.SEARCH_INPUT))
+        return True
 
     def search_by_text(self, text):
-        self._send_keys(*self.SEARCH_INPUT, text)
-        self._click(*self.GO_BUTTON)
+        self._send_keys(*self.locators.SEARCH_INPUT, text)
+        self._click(*self.locators.GO_BUTTON)
 
+    def go_to_downloads(self) -> DownloadsPage:
+        self._click(*self.locators.DOWNLOAD_LINK)
+        return DownloadsPage(self._driver)
 
-class DescrMainPage(Page):
-
-    path = '/'
-
-    search_input = Element(By.CSS_SELECTOR, '#id-search-field', 'Поисковый инпут')
-    go_button = Element(By.CSS_SELECTOR, '#submit', 'Кнопка "GO"')
+    def get_search_input(self):
+        return self._find_element(*self.locators.SEARCH_INPUT)

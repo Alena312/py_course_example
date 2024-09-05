@@ -1,5 +1,6 @@
 from typing import List
 
+from selenium.webdriver import ActionChains
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
@@ -15,9 +16,17 @@ class BasePage:
     def path(self):
         raise NotImplementedError
 
+    @abstractmethod
+    def is_page_loaded(self) -> bool:
+        raise NotImplementedError
+
     def __init__(self, driver):
         self._driver: ChromiumDriver = driver
         self.wait = WebDriverWait(self._driver, 10)
+        self.ac = ActionChains(self._driver)
+
+    def click_and_hold(self, on_element, seconds):
+        self.ac.click_and_hold(on_element).pause(seconds).release().perform()
 
     def _get_waiter(self, time):
         return WebDriverWait(self._driver, time)
@@ -40,3 +49,9 @@ class BasePage:
         self.wait.until(ec.visibility_of_element_located((by, locator)))
         self._find_element(by, locator).clear()
         self._find_element(by, locator).send_keys(text)
+
+    def scroll(self, x: int, y:int):
+        return self._driver.execute_script(f'window.scroll({x}, {y})')
+
+    def scroll_by_element(self, element: WebElement):
+        return self._driver.execute_script('arguments[0].scrollIntoView()', element)

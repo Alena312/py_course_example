@@ -3,8 +3,8 @@ from selenium.webdriver.chromium.webdriver import ChromiumDriver
 import typing
 from ui.page_object.page import BasePage
 
-# T = typing.TypeVar('T', bound=BasePage)
-T = typing.TypeVar('T')
+T = typing.TypeVar('T', bound=BasePage)
+# T = typing.TypeVar('T')
 
 
 class BaseSuite:
@@ -19,4 +19,8 @@ class BaseSuite:
 
     def get_page(self, page_class: typing.Type[T]) -> T:
         self.browser.get(self.base_url + page_class.path)
-        return page_class(self.browser)
+        # document.readyState \ 'complete', 'eager' - при получении страницы селениум смотрит на состояние страницы
+        page = page_class(self.browser)
+        assert page.is_page_loaded(), f'{page.path} не загрузилась'
+        return page
+
