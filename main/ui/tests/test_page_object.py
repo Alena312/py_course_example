@@ -1,9 +1,15 @@
+import time
+
 import pytest
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.relative_locator import with_tag_name, locate_with
 
-from ui.page_object.mainpage import MainPage
-from ui.suite.base import BaseSuite
+
+from main.ui.page_object.mainpage import MainPage
+from main.ui.suite.base import BaseSuite
 
 
 class TestMainPage(BaseSuite):
@@ -50,3 +56,37 @@ class TestMainPage(BaseSuite):
 
         # self.browser.switch_to.parent_frame()
         self.browser.switch_to.window(window_id)
+
+    @pytest.mark.skip
+    def test_geolocation(self):
+        params = {
+            'latitude': 42.1408845,
+            'longitude': -72.5033907,
+            'accuracy': 100
+        }
+        self.browser.execute_cdp_cmd('Emulation.setGeolocationOverride', params)
+        self.browser.get('https://www.google.com/maps')
+        time.sleep(5)
+        element = WebDriverWait(self.browser, 20).until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, 'div[id="mylocation"]'))
+        )
+        element.click()
+        time.sleep(5)
+
+    @pytest.mark.skip
+    def test_hide_scrollar(self):
+        self.browser.execute_cdp_cmd('Emulation.setScrollbarsHidden', {'hidden': True})
+        self.browser.get('https://www.google.com/')
+        time.sleep(1)
+        self.browser.set_window_size(500, 400)
+        time.sleep(5)
+
+    @pytest.mark.debug
+    def test_rel_locators(self):
+        self.browser.get('https://www.python.org/')
+        self.browser.maximize_window()
+        element_1 = self.browser.find_element(By.CSS_SELECTOR, '.icon-search+label')
+        element_2 = self.browser.find_element(By.CSS_SELECTOR, 'button.search-button')
+        # используем имя тега и относительные локаторы, чтобы найти элемент между ними
+        # elements = self.browser.find_elements(with_tag_name("input").below(element_1))
+        elements = self.browser.find_elements(locate_with(By.CSS_SELECTOR, 'input').near(element_1))

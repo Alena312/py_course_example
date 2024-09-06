@@ -1,5 +1,5 @@
-from ui.page_object.downloadpage import DownloadsPage
-from ui.page_object.page import BasePage
+from main.ui.page_object.downloadpage import DownloadsPage
+from main.ui.page_object.page import BasePage
 from selenium.webdriver.common.by import By
 
 

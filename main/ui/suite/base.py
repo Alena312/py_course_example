@@ -1,7 +1,7 @@
 import pytest
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 import typing
-from ui.page_object.page import BasePage
+from main.ui.page_object.page import BasePage
 
 T = typing.TypeVar('T', bound=BasePage)
 # T = typing.TypeVar('T')
