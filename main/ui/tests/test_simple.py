@@ -35,7 +35,7 @@ def test_waiting_ec(browser):
     assert 'An Informal Introduction to Python' in browser.title
 
 @pytest.mark.skip
-def test_download(browser):
+def test_download(browser, test_dir):
     browser.get('https://www.python.org/downloads/')
 
     wait = WebDriverWait(browser, 10)
@@ -43,11 +43,11 @@ def test_download(browser):
     browser.find_element(By.CSS_SELECTOR, '.download-for-current-os .download-os-windows .download-buttons a').click()
 
     import os
-    files = os.listdir('/tmp')
+    files = os.listdir(test_dir)
     print(files)
 
     def wait_file(_):
-        return len(files) < len(os.listdir('/tmp'))
+        return len(files) < len(os.listdir(test_dir))
 
     wait.until(wait_file)
     time.sleep(10)

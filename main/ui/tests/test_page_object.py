@@ -81,7 +81,7 @@ class TestMainPage(BaseSuite):
         self.browser.set_window_size(500, 400)
         time.sleep(5)
 
-    @pytest.mark.debug
+    @pytest.mark.skip
     def test_rel_locators(self):
         self.browser.get('https://www.python.org/')
         self.browser.maximize_window()
@@ -90,3 +90,7 @@ class TestMainPage(BaseSuite):
         # используем имя тега и относительные локаторы, чтобы найти элемент между ними
         # elements = self.browser.find_elements(with_tag_name("input").below(element_1))
         elements = self.browser.find_elements(locate_with(By.CSS_SELECTOR, 'input').near(element_1))
+
+    def test_browser_logs(self):
+        self.browser.get('https://ngs.ru/')
+        assert 0
