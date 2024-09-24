@@ -1,5 +1,7 @@
+import os
 import time
 
+import allure
 import pytest
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -14,8 +16,8 @@ from main.ui.suite.base import BaseSuite
 
 class TestMainPage(BaseSuite):
 
-    @pytest.mark.skip
-    @pytest.mark.parametrize('text', ['python'])
+    # @pytest.mark.skip
+    @pytest.mark.parametrize('text', ['python', 'docs'])
     def test_search(self, text):
         page = self.get_page(MainPage)
         page.search_by_text(text)
@@ -74,7 +76,7 @@ class TestMainPage(BaseSuite):
         time.sleep(5)
 
     @pytest.mark.skip
-    def test_hide_scrollar(self):
+    def test_hide_scrollbar(self):
         self.browser.execute_cdp_cmd('Emulation.setScrollbarsHidden', {'hidden': True})
         self.browser.get('https://www.google.com/')
         time.sleep(1)
@@ -91,6 +93,22 @@ class TestMainPage(BaseSuite):
         # elements = self.browser.find_elements(with_tag_name("input").below(element_1))
         elements = self.browser.find_elements(locate_with(By.CSS_SELECTOR, 'input').near(element_1))
 
+    @allure.story('Log test')
+    @allure.severity(allure.severity_level.CRITICAL)
+    @allure.issue('https://alena.jira.com/ISSUE-666')
+    @allure.description('Description from decorator')
+    @allure.title('Тест на браузерные логи и декораторы аллюра')
+    @pytest.mark.smoke
     def test_browser_logs(self):
-        self.browser.get('https://ngs.ru/')
-        assert 0
+        """
+        Смотрим логи браузера
+        """
+        self.logger.info('TEST START')
+
+        with allure.step('Going to ngs.ru'):
+            self.browser.get('https://ngs.ru/')
+            with allure.step('Second level step'):
+                self.logger.info('GOT URL')
+
+        with allure.step('Checking assert 0'):
+            assert 0

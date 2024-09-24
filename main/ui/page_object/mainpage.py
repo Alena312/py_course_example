@@ -1,7 +1,10 @@
+import logging
+
 from main.ui.page_object.downloadpage import DownloadsPage
 from main.ui.page_object.page import BasePage
 from selenium.webdriver.common.by import By
 
+logger = logging.getLogger('test')
 
 class MainPageLocators:
     SEARCH_INPUT = (By.CSS_SELECTOR, '#id-search-field')
@@ -22,6 +25,7 @@ class MainPage(BasePage):
         return True
 
     def search_by_text(self, text):
+        logger.info(f'I am searching text "{text}"')
         self._send_keys(*self.locators.SEARCH_INPUT, text)
         self._click(*self.locators.GO_BUTTON)
 

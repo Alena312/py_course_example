@@ -1,8 +1,11 @@
 import time
+
+import allure
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 
 @pytest.mark.skip
 @pytest.mark.parametrize('title', ['Google', 'Not'])
@@ -16,7 +19,7 @@ def test_waiting_callback(browser):
     # browser.implicitly_wait(15)
     wait = WebDriverWait(browser, 15)
 
-    def wait_slider(browser):
+    def wait_slider():
         print('ждем движения слайдера')
         return browser.find_element(By.XPATH, '//*[@id="dive-into-python"]/ul[2]/li[2]/div[2]/p/a').is_displayed()
 
@@ -34,7 +37,8 @@ def test_waiting_ec(browser):
     browser.find_element(By.XPATH, '//*[@id="dive-into-python"]/ul[2]/li[2]/div[2]/p/a').click()
     assert 'An Informal Introduction to Python' in browser.title
 
-@pytest.mark.skip
+
+# @pytest.mark.skip
 def test_download(browser, test_dir):
     browser.get('https://www.python.org/downloads/')
 
@@ -46,6 +50,7 @@ def test_download(browser, test_dir):
     files = os.listdir(test_dir)
     print(files)
 
+    @allure.step('Checking downloading')
     def wait_file(_):
         return len(files) < len(os.listdir(test_dir))
 

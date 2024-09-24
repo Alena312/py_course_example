@@ -1,3 +1,6 @@
+import logging
+
+import allure
 import pytest
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 import typing
@@ -11,12 +14,17 @@ class BaseSuite:
 
     browser: ChromiumDriver
     base_url: str
+    logger: logging.Logger
 
     @pytest.fixture(autouse=True)
-    def prepare(self, browser, base_url):
-        self.browser: ChromiumDriver = browser
-        self.base_url: str = base_url
+    def prepare(self, browser, base_url, logger):
+        self.browser = browser
+        self.base_url = base_url
+        self.logger = logger
 
+        self.logger.info('PREPARE DONE')
+
+    @allure.step('Getting page {page_class}')
     def get_page(self, page_class: typing.Type[T]) -> T:
         self.browser.get(self.base_url + page_class.path)
         # document.readyState \ 'complete', 'eager' - при получении страницы селениум смотрит на состояние страницы

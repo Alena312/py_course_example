@@ -1,5 +1,7 @@
+import logging
 from typing import List
 
+import allure
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -7,6 +9,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 from abc import abstractmethod
+
+logger = logging.getLogger('test')
 
 
 class BasePage:
@@ -21,6 +25,7 @@ class BasePage:
         raise NotImplementedError
 
     def __init__(self, driver):
+        logger.info(f'INITIAZATION PAGE {self.__class__.__name__}')
         self._driver: ChromiumDriver = driver
         self.wait = WebDriverWait(self._driver, 10)
         self.ac = ActionChains(self._driver)
@@ -37,6 +42,7 @@ class BasePage:
     def _find_elements(self, by, locator) -> List[WebElement]:
         return self._driver.find_elements(by, locator)
 
+    @allure.step('Click on element {locator}')
     def _click(self, by, locator):
         self.wait.until(ec.visibility_of_element_located((by, locator)))
         self._find_element(by, locator).click()

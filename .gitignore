@@ -1,6 +1,8 @@
 # other
 *.png
 .idea/
+allure
+tmp_dir
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
